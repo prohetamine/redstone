@@ -12,7 +12,8 @@
     "dist"
   ],
   "scripts": {
-    "publish": "_NODE_ENV=production vite build && npm login && npm publish",
+    "build-publish": "npm run build && npm login && npm publish",
+    "build": "_NODE_ENV=production vite build",
     "dev": "_NODE_ENV=development vite build --watch"
   },
   "devDependencies": {
