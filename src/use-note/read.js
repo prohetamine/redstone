@@ -21,7 +21,7 @@ const read = async ({ cache, useCache = true, params }) => {
 
         const cacheHash = `${params.join('-')}-${b}`
 
-        const cacheAPI = await caches.open('redstone-cache');
+        const cacheAPI = await caches.open('redstone-cache')
 
         let data = null
 
