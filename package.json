@@ -1,6 +1,6 @@
 {
   "name": "@prohetamine/redstone",
-  "version": "0.0.1",
+  "version": "0.0.21",
   "description": "Simple state storage library in the blockchain",
   "author": "Stas Prohetamine",
   "license": "ISC",
@@ -12,7 +12,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "_NODE_ENV=production vite build",
+    "publish": "_NODE_ENV=production vite build && npm login && npm publish",
     "dev": "_NODE_ENV=development vite build --watch"
   },
   "devDependencies": {
