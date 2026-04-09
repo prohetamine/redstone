@@ -179,7 +179,7 @@ const useReadListItem = (_id = null, _item, args = defaultArgs) => {
 
     return {
         value: isAllowDataRead ? item : null, 
-        status: isError ? 'error' : isAllowDataRead ? isLoading ? 'pending' : 'success' : 'pending'
+        status: isError && load ? 'error' : isAllowDataRead && load ? isLoading ? 'pending' : 'success' : 'pending',
     }
 }
 

@@ -138,7 +138,7 @@ const useReadStorage = (_id = null, args = defaultArgs) => {
 
     return {
         value: _value,
-        status: isError ? 'error' : isAllowDataRead ? isLoading ? 'pending' : 'success' : 'pending'
+        status: isError && load ? 'error' : isAllowDataRead && load ? isLoading ? 'pending' : 'success' : 'pending',
     }
 }
 

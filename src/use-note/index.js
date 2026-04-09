@@ -141,7 +141,7 @@ const useNote = (_id = null, args = defaultArgs) => {
     return {
         value: _value,
         updateValue, 
-        status: isError && load ? 'error' : isAllowDataRead ? isLoading ? 'pending' : 'success' : 'pending',
+        status: isError && load ? 'error' : isAllowDataRead && load ? isLoading ? 'pending' : 'success' : 'pending',
         getCommission: () => getCommissionID({ id, address })
     }
 }

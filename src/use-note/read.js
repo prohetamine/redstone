@@ -76,12 +76,14 @@ const read = async ({ cache, useCache = true, params }) => {
     if (isNetworkFailure) {
         return false
     }
-
-    const main = datas.filter(f => f).sort(
-        (a, b) => Number(b.timestamp) - Number(a.timestamp)
+    
+    const main = datas.filter(f => f && f?.timestamp !== '0').sort(
+        (a, b) => once 
+                    ? Number(a.timestamp) - Number(b.timestamp) 
+                    : Number(b.timestamp) - Number(a.timestamp)
     )
 
-    return main[0].text
+    return main[0]?.text || ''
 }
 
 export default read

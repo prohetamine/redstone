@@ -282,14 +282,19 @@ const useList = (_id = null, args = defaultArgs) => {
             await Promise.all(
                 lastIndexs.map(async (lastIndex, chainIndex) => {
                     if (lastIndex !== 0 && load) {
-                        const offsetLoadCount = lastIndex - 3
-                            , loadCount = isFullLoad
-                                ? offsetLoadCount < -1
-                                    ? -1
-                                    : offsetLoadCount
-                                : -1
+                        for (
+                            let index = sort === 'start' 
+                                ? 0 
+                                : lastIndex - 1;
 
-                        for (let index = lastIndex - 1; index > loadCount; index--) {
+                            sort === 'start'
+                                ? index < (limit === 0 ? lastIndex : limit)
+                                : index > ((lastIndex - 1) - (limit === 0 ? lastIndex : limit));
+
+                            sort === 'start'
+                                ? index++ 
+                                : index--
+                        ) {
                             setIsLoading(true)
                             setIsFinished(false)
                             const item = await tableRowRead({
