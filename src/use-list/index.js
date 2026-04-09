@@ -30,7 +30,9 @@ const defaultArgs = {
     load: true, 
     watch: true, 
     interval: 30000,
-    primaryId: null
+    primaryId: null,
+    limit: 0,
+    sort: 'end',
 }
 
 const useList = (_id = null, args = defaultArgs) => {
@@ -50,7 +52,9 @@ const useList = (_id = null, args = defaultArgs) => {
         load, 
         watch, 
         interval,
-        primaryId
+        primaryId,
+        limit,
+        sort,
     } = { ...defaultArgs, ...args }
 
     const pingNetworks = usePingNetwork()
@@ -194,7 +198,7 @@ const useList = (_id = null, args = defaultArgs) => {
             clearTimeout(timeId)
             clearInterval(intervalId)
         }
-    }, [isConnected, isError, addr, chainId, cache, lastIndexs, load, watch, ...params])
+    }, [isConnected, isError, addr, chainId, cache, lastIndexs, load, watch, sort, limit, ...params])
 
     useEffect(() => {
         if (isError) return
@@ -203,14 +207,19 @@ const useList = (_id = null, args = defaultArgs) => {
             await Promise.all(
                 lastIndexs.map(async (lastIndex, chainIndex) => {
                     if (lastIndex !== 0 && load) {
-                        const offsetLoadCount = lastIndex - 3
-                            , loadCount = isFullLoad
-                                ? offsetLoadCount < -1
-                                    ? -1
-                                    : offsetLoadCount
-                                : -1
+                        for (
+                            let index = sort === 'start' 
+                                ? 0 
+                                : lastIndex - 1;
 
-                        for (let index = lastIndex - 1; index > loadCount; index--) {
+                            sort === 'start'
+                                ? index < (limit === 0 ? lastIndex : limit)
+                                : index > ((lastIndex - 1) - (limit === 0 ? lastIndex : limit));
+
+                            sort === 'start'
+                                ? index++ 
+                                : index--
+                        ) {
                             setIsLoading(true)
                             setIsFinished(false)
                             const item = await tableRowRead({
@@ -234,7 +243,8 @@ const useList = (_id = null, args = defaultArgs) => {
                         if (lastIndex !== 0) {
                             setIsLoading(true)
                             setIsFinished(false)
-                            const index = Math.floor(lastIndex * Math.random())
+                            const max = (limit === 0 ? lastIndex : limit)
+                            const index = Math.floor(max * Math.random())
                             const item = await tableRowRead({
                                 chainIndex,
                                 useCache: false,
@@ -253,7 +263,7 @@ const useList = (_id = null, args = defaultArgs) => {
             clearTimeout(timeId)
             clearInterval(intervalId)
         }
-    }, [isConnected, isError, isFullLoad, lastIndexs, chainId, addr, load, watch, interval, cache, ...params])
+    }, [isConnected, isError, isFullLoad, lastIndexs, chainId, addr, load, watch, interval, cache, sort, limit, ...params])
 
     useEffect(() => {
         const timeId = setTimeout(pingNetworks.ping, 100)
