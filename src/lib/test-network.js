@@ -23,7 +23,7 @@ export default [
       }
     }),
     token: '0x512F7469BcC83089497506b5df64c6E246B39925',
-    receiver: '0x9505E8B8546cC9015B2c015826d25821CC48C153',
+    receiver: '0x67C109F60d55e89907C4d0Ac91103f1A8Ee86E7c',
     publicRpc: `http://${ip}:8545`
   },
   {
@@ -44,7 +44,7 @@ export default [
       }
     }),
     token: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-    receiver: '0x810090f35DFA6B18b5EB59d298e2A2443a2811E2',
+    receiver: '0x022D2B8173c7BCad83420d0953362335afB89355',
     publicRpc: `http://${ip}:8546`
   },
   {
@@ -65,7 +65,7 @@ export default [
       }
     }),
     token: '0xD566886eB93500e2BA464bd48c8D5A2556569253',
-    receiver: '0xC08B8Ab6d6ac31374d37B26D530E1Ee5Be8d6406',
+    receiver: '0x5179cB4c9D3A3d86C054E2cCE30E4D08B7526885',
     publicRpc: `https://bsc-testnet-rpc.publicnode.com`
   }
 ]

@@ -3,7 +3,7 @@ import murmur from 'murmurhash3js'
 import PromiseQueueCache from '../lib/promise-queue-cache.js'
 import update from '../lib/update.js'
 import read from './read.js'
-import { getCertificateCommission } from './../lib/commission.js'
+import { getCertificateCommission, getOwnerCommission } from './../lib/commission.js'
 import usePingNetwork from '../lib/use-ping-network.js'
 import useApp from '../use-app.js'
 import config from '../../config.js'
@@ -65,6 +65,20 @@ const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
             setIsFinished(true)
         }
 
+        return isUpdated
+    }
+
+    const setOwnerCommission = async count => {
+        if (isError || !isConnected) return false
+
+        const isUpdated = await update({ type: 'setOwnerCommission', address, params: [count] })
+        return isUpdated
+    }
+
+    const setCertificateCommission = async count => {
+        if (isError || !isConnected) return false
+
+        const isUpdated = await update({ type: 'setCertificateCommission', address, params: [count] })
         return isUpdated
     }
 
@@ -154,6 +168,9 @@ const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
     }, [isConnected, chainId, address, id])
 
     return {
+        setOwnerCommission,
+        getOwnerCommission,
+        setCertificateCommission,
         getCommission,
         recheckValue,
         value, 

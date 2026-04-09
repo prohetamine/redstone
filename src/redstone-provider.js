@@ -18,7 +18,7 @@ if (!window.REDSTONE) {
   }
 }
 
-const Provider = ({ children, config }) => {
+const RedstoneProvider = ({ children, config }) => {
   if (!window.REDSTONE.appKit) {
     const networks = _config.blockChainsData.map(({ network }) => network)
     window.REDSTONE.networks = networks
@@ -37,4 +37,4 @@ const Provider = ({ children, config }) => {
   return AppKitProvider({ children, ...config })
 }
 
-export default Provider
+export default RedstoneProvider

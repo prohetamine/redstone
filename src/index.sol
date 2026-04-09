@@ -137,6 +137,24 @@ contract Redstone is Fun, ReentrancyGuard {
         ownerCertificateCommission = _ownerCertificateCommission;
     }
 
+    function setOwnerCommission(uint256 _newCommission) external {
+        require(msg.sender == owner, "Not owner");
+        ownerCommission = _newCommission;
+    }
+
+    function setCertificateCommission(uint256 _newCommission) external {
+        require(msg.sender == owner, "Not owner");
+        ownerCertificateCommission = _newCommission;
+    }
+
+    function getOwnerCommission() view public returns (uint256) {
+        return ownerCommission;
+    }
+
+    function getCertificateCommission() view public returns (uint256) {
+        return ownerCertificateCommission;
+    }
+
     function certificateCommissionID(string memory id, uint256 addedValue) public nonReentrant {
         require(bytes(id).length <= 128, "Id value too much");
         require(addedValue <= 100000000, "Added value too much");
@@ -167,10 +185,6 @@ contract Redstone is Fun, ReentrancyGuard {
         } else {
             return 0;     
         }
-    }
-
-    function getCertificateCommission() view public returns (uint256) {
-        return ownerCertificateCommission;
     }
 
     ///////////////////////////////////////////////////////////////////////

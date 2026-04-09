@@ -1,4 +1,4 @@
-import Provider from './provider.js'
+import RedstoneProvider from './redstone-provider.js'
 import useCertificateCommissionID from './use-certificate-commission-id'
 import useCounter from './use-counter'
 import useNote from './use-note'
@@ -11,7 +11,7 @@ import useApp from './use-app.js'
 import config from '../config.js'
 
 export { 
-    Provider,
+    RedstoneProvider,
     useCertificateCommissionID,
     useCounter,
     useNote,
