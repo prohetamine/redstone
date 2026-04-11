@@ -3,7 +3,7 @@ import murmur from 'murmurhash3js'
 import PromiseQueueCache from '../lib/promise-queue-cache.js'
 import update from '../lib/update.js'
 import read from './read.js'
-import { getCertificateCommission, getOwnerCommission } from './../lib/commission.js'
+import { getCertificateCommission } from './../lib/commission.js'
 import usePingNetwork from '../lib/use-ping-network.js'
 import useApp from '../use-app.js'
 import config from '../../config.js'
@@ -21,7 +21,7 @@ const defaultArgs = {
     primaryId: null
 }
 
-const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
+const useCertificate = (_id = null, args = defaultArgs) => {
     const { useAppKitNetwork, hostHash } = window.REDSTONE
 
     const { 
@@ -46,7 +46,7 @@ const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
 
     const [isLoading, setIsLoading, setIsFinished] = useLoadingController(isConnected, isError, chainId, load, watch, interval, cache)
 
-    const getCommission = () => getCertificateCommission({ address })
+    const getCommission = async () => getCertificateCommission({ address })
 
     const updateValue = async (newValue = false) => {
         if (isError || !isConnected || !address) return false
@@ -65,20 +65,6 @@ const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
             setIsFinished(true)
         }
 
-        return isUpdated
-    }
-
-    const setOwnerCommission = async count => {
-        if (isError || !isConnected) return false
-
-        const isUpdated = await update({ type: 'setOwnerCommission', address, params: [count] })
-        return isUpdated
-    }
-
-    const setCertificateCommission = async count => {
-        if (isError || !isConnected) return false
-
-        const isUpdated = await update({ type: 'setCertificateCommission', address, params: [count] })
         return isUpdated
     }
 
@@ -168,9 +154,6 @@ const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
     }, [isConnected, chainId, address, id])
 
     return {
-        setOwnerCommission,
-        getOwnerCommission,
-        setCertificateCommission,
         getCommission,
         recheckValue,
         value, 
@@ -179,4 +162,4 @@ const useCertificateCommissionID = (_id = null, args = defaultArgs) => {
     }
 }
 
-export default useCertificateCommissionID
+export default useCertificate
