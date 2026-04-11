@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import murmur from 'murmurhash3js'
 import PromiseQueueCache from '../lib/promise-queue-cache.js'
 import update from '../lib/update.js'
-import read from './read.js'
-import { getCertificateCommission } from './../lib/commission.js'
 import usePingNetwork from '../lib/use-ping-network.js'
 import useApp from '../use-app.js'
 import config from '../../config.js'
 import useLoadingController from '../lib/use-loading-controller.js'
+import readCommissionId from '../use-commission/read-commission-id.js'
+import readCertificateCommission from '../use-commission/read-certificate-commission.js'
 
 if (!window.REDSTONE.QUEUE) {
     window.REDSTONE.QUEUE = Array(config.blockChainsData.length).fill(true).map(() => new PromiseQueueCache())
@@ -46,7 +46,15 @@ const useCertificate = (_id = null, args = defaultArgs) => {
 
     const [isLoading, setIsLoading, setIsFinished] = useLoadingController(isConnected, isError, chainId, load, watch, interval, cache)
 
-    const getCommission = async () => getCertificateCommission({ address })
+    const getCommission = async () => {    
+        const commission = await readCertificateCommission({ chainId, cache, useCache: false })
+
+        return {
+            chainId,
+            address,
+            commission
+        }
+    }
 
     const updateValue = async (newValue = false) => {
         if (isError || !isConnected || !address) return false
@@ -58,7 +66,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
             setIsLoading(true)
             setIsFinished(false)
             await pingNetworks.ping()
-            const commission = await read({ cache, chainId, useCache: false, params: [id] })
+            const commission = await readCommissionId({ cache, chainId, useCache: false, params: [id] })
             if (commission !== false) {
                 setValue(commission)
             }
@@ -74,7 +82,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
         setIsLoading(true)
         setIsFinished(false)
         await pingNetworks.ping()
-        const commission = await read({ cache, chainId, useCache: false, params: [id] })
+        const commission = await readCommissionId({ cache, chainId, useCache: false, params: [id] })
         setIsFinished(true)
         if (commission !== false) {
             setValue(commission)
@@ -98,7 +106,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const commission = await read({ chainId, cache, params: [id] })
+                const commission = await readCommissionId({ useCache: true, chainId, cache, params: [id] })
                 if (commission !== false) {
                     setValue(commission)
                 }
@@ -111,7 +119,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const commission = await read({ useCache: false, chainId, cache, params: [id] })
+                const commission = await readCommissionId({ useCache: false, chainId, cache, params: [id] })
                 if (commission !== false) {
                     setValue(commission)
                 }
@@ -132,7 +140,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
 
     useEffect(() => {
         if (isError) return
-
+        
         setIsLoading(true)
         setIsFinished(false)
         setValue(0)
@@ -142,7 +150,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const commission = await read({ chainId, cache, params: [id] })
+                const commission = await readCommissionId({ useCache: true, chainId, cache, params: [id] })
                 if (commission !== false) {
                     setValue(commission)
                 }
@@ -158,7 +166,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
         recheckValue,
         value, 
         updateValue, 
-        status: isError ? 'error' : isLoading ? 'pending' : 'success'
+        status: isError ? 'error' : isLoading && load ? 'pending' : 'success'
     }
 }
 

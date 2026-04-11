@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import murmur from 'murmurhash3js'
 import PromiseQueueCache from '../lib/promise-queue-cache.js'
 import usePingNetwork from '../lib/use-ping-network.js'
-import { getCommissionID } from '../lib/commission.js'
 import update from '../lib/update.js'
 import read from './read.js'
 import { emptyAddress } from '../lib/const.js'
 import useApp from '../use-app.js'
 import config from '../../config.js'
 import useLoadingController from '../lib/use-loading-controller.js'
+import readCommissionId from '../use-commission/read-commission-id.js'
 
 if (!window.REDSTONE.QUEUE) {
     window.REDSTONE.QUEUE = Array(config.blockChainsData.length).fill(true).map(() => new PromiseQueueCache())
@@ -158,7 +158,15 @@ const useCounter = (_id = null, args = defaultArgs) => {
         value: isAllowDataRead ? value : userValue, 
         updateValue, 
         status: isError && load ? 'error' : isAllowDataRead && load ? isLoading ? 'pending' : 'success' : 'pending',
-        getCommission: () => getCommissionID({ id, address })
+        getCommission: async () => {
+            const commission = await readCommissionId({ chainId, cache, useCache: true, params: [id] })
+        
+            return {
+                commission,
+                address,
+                chainId
+            }
+        }
     }
 }
 

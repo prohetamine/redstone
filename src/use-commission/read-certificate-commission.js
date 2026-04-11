@@ -1,14 +1,13 @@
 import config from '../../config'
 
-const read = async ({ chainId, cache, useCache = true, params }) => {
+const readCertificateCommission = async ({ chainId, cache, useCache = true }) => {
     const { JsonRpcProvider, Wallet, Contract } = window.REDSTONE
 
-    const id = params[0]
     const chainIndex = config.blockChainsData.findIndex(({ network: { id } }) => id === chainId)
 
     const defaultValue = 0
 
-    const cacheHash = `commission-${id}`
+    const cacheHash = `cert-commission`
     const commission = await window.REDSTONE.QUEUE[chainIndex].add(cacheHash, useCache, async () => {
         try {
             const { receiver: receiverAddress, publicRpc } = config.blockChainsData[chainIndex]
@@ -18,7 +17,7 @@ const read = async ({ chainId, cache, useCache = true, params }) => {
                 , signer = new Wallet(_wallet.privateKey, provider)
 
             const receiver = new Contract(receiverAddress, config.ABI.receiver, signer)
-                , commission = await receiver.getCommissionID(id)
+                , commission = await receiver.getCertificateCommission()
             
             return {
                 data: parseInt(commission),
@@ -36,4 +35,4 @@ const read = async ({ chainId, cache, useCache = true, params }) => {
     return commission
 }
 
-export default read
+export default readCertificateCommission

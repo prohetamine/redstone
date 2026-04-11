@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import PromiseQueueCache from './lib/promise-queue-cache.js'
-import update from './lib/update.js'
-import { getCertificateCommission, getOwnerCommission } from './lib/commission.js'
-import usePingNetwork from './lib/use-ping-network.js'
-import useApp from './use-app.js'
-import config from './../config.js'
-import useLoadingController from './lib/use-loading-controller.js'
+import PromiseQueueCache from '../lib/promise-queue-cache.js'
+import update from '../lib/update.js'
+import usePingNetwork from '../lib/use-ping-network.js'
+import useApp from '../use-app.js'
+import config from '../../config.js'
+import useLoadingController from '../lib/use-loading-controller.js'
+import readCertificateCommission from './read-certificate-commission.js'
+import readOwnerCommission from './read-owner-commission.js'
 
 if (!window.REDSTONE.QUEUE) {
     window.REDSTONE.QUEUE = Array(config.blockChainsData.length).fill(true).map(() => new PromiseQueueCache())
@@ -58,24 +59,23 @@ const useCommission = (args = defaultArgs) => {
     }
 
     useEffect(() => {
-        if (isError || !isConnected) return
+        if (isError) return
 
         const timeId = setTimeout(async () => {
             if (load) {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                
-                const certCommission = await getCertificateCommission({ address })
-                    , ownerCommission = await getOwnerCommission({ address })
+                const certCommission = await readCertificateCommission({ chainId, cache, useCache: false })
+                    , ownerCommission = await readOwnerCommission({ chainId, cache, useCache: false })
 
                 if (
-                    certCommission.commission !== false && 
-                    ownerCommission.commission !== false
+                    certCommission !== false && 
+                    ownerCommission !== false
                 ) {
                     setValue({
-                        cert: certCommission.commission,
-                        owner: ownerCommission.commission
+                        cert: certCommission,
+                        owner: ownerCommission
                     })
                 }
                 setIsFinished(true)
@@ -87,16 +87,16 @@ const useCommission = (args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const certCommission = await getCertificateCommission({ address })
-                    , ownerCommission = await getOwnerCommission({ address })
+                const certCommission = await readCertificateCommission({ chainId, cache, useCache: true })
+                    , ownerCommission = await readOwnerCommission({ chainId, cache, useCache: true })
 
                 if (
-                    certCommission.commission !== false && 
-                    ownerCommission.commission !== false
+                    certCommission !== false && 
+                    ownerCommission !== false
                 ) {
                     setValue({
-                        cert: certCommission.commission,
-                        owner: ownerCommission.commission
+                        cert: certCommission,
+                        owner: ownerCommission
                     })
                 }
                 setIsFinished(true)
@@ -115,27 +115,30 @@ const useCommission = (args = defaultArgs) => {
     }, [isConnected, chainId, address])
 
     useEffect(() => {
-        if (isError || !isConnected) return
+        if (isError) return
 
         setIsLoading(true)
         setIsFinished(false)
-        setValue(0)
+        setValue({
+            cert: 0,
+            owner: 0
+        })
 
         const timeId = setTimeout(async () => {
             if (load) {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const certCommission = await getCertificateCommission({ address })
-                    , ownerCommission = await getOwnerCommission({ address })
+                const certCommission = await readCertificateCommission({ chainId, cache, useCache: true })
+                    , ownerCommission = await readOwnerCommission({ chainId, cache, useCache: true })
 
                 if (
-                    certCommission.commission !== false && 
-                    ownerCommission.commission !== false
+                    certCommission !== false && 
+                    ownerCommission !== false
                 ) {
                     setValue({
-                        cert: certCommission.commission,
-                        owner: ownerCommission.commission
+                        cert: certCommission,
+                        owner: ownerCommission
                     })
                 }
                 setIsFinished(true)
@@ -149,7 +152,7 @@ const useCommission = (args = defaultArgs) => {
         updateOwnerCommission,
         updateCertificateCommission,
         value, 
-        status: isError ? 'error' : isLoading ? 'pending' : 'success'
+        status: isError ? 'error' : isLoading && load ? 'pending' : 'success'
     }
 }
 

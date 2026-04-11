@@ -1,6 +1,6 @@
 import RedstoneProvider from './redstone-provider.js'
 import useCertificate from './use-certificate'
-import useCommission from './use-commission.js'
+import useCommission from './use-commission'
 import useCounter from './use-counter'
 import useNote from './use-note'
 import useReadNote from './use-read-note.js'
