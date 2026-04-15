@@ -78,7 +78,7 @@ const useList = (_id = null, args = defaultArgs) => {
 
     const chainId = parseInt(network.chainId)
 
-    const id = `${_id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`}${stas ? (paymentAddress || '').toLowerCase() : ''}`
+    const id = `${_id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`}${(paymentAddress || '').toLowerCase()}`
         , copyId = murmur.x86.hash128(`${userCopyId}`)
 
     const params = [id, copyId, stas, self, once, single, randomHash, addressValue]
