@@ -18,7 +18,8 @@ const defaultArgs = {
     watch: false, 
     interval: 30000,
     cache: 1000,
-    primaryId: null
+    primaryId: null,
+    paymentAddress: null,
 }
 
 const useCertificate = (_id = null, args = defaultArgs) => {
@@ -29,7 +30,8 @@ const useCertificate = (_id = null, args = defaultArgs) => {
         watch, 
         interval,
         cache,
-        primaryId
+        primaryId,
+        paymentAddress
     } = { ...defaultArgs, ...args }
 
     const pingNetworks = usePingNetwork()
@@ -43,6 +45,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
     const chainId = parseInt(network.chainId)
 
     const id = _id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`
+        , certId = `${id}${(paymentAddress || '').toLowerCase()}`
 
     const [isLoading, setIsLoading, setIsFinished] = useLoadingController(isConnected, isError, chainId, load, watch, interval, cache)
 
@@ -66,7 +69,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
             setIsLoading(true)
             setIsFinished(false)
             await pingNetworks.ping()
-            const commission = await readCommissionId({ cache, chainId, useCache: false, params: [id] })
+            const commission = await readCommissionId({ cache, chainId, useCache: false, params: [certId] })
             if (commission !== false) {
                 setValue(commission)
             }
@@ -82,7 +85,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
         setIsLoading(true)
         setIsFinished(false)
         await pingNetworks.ping()
-        const commission = await readCommissionId({ cache, chainId, useCache: false, params: [id] })
+        const commission = await readCommissionId({ cache, chainId, useCache: false, params: [certId] })
         setIsFinished(true)
         if (commission !== false) {
             setValue(commission)
@@ -106,7 +109,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const commission = await readCommissionId({ useCache: true, chainId, cache, params: [id] })
+                const commission = await readCommissionId({ useCache: true, chainId, cache, params: [certId] })
                 if (commission !== false) {
                     setValue(commission)
                 }
@@ -119,7 +122,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const commission = await readCommissionId({ useCache: false, chainId, cache, params: [id] })
+                const commission = await readCommissionId({ useCache: false, chainId, cache, params: [certId] })
                 if (commission !== false) {
                     setValue(commission)
                 }
@@ -131,7 +134,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
             clearTimeout(timeId)
             clearInterval(intervalId)
         }
-    }, [isConnected, isError, address, id, chainId, load, watch, interval])
+    }, [isConnected, isError, address, id, certId, chainId, load, watch, interval])
 
     useEffect(() => {
         const timeId = setTimeout(pingNetworks.ping, 100)
@@ -150,7 +153,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
                 setIsLoading(true)
                 setIsFinished(false)
                 await pingNetworks.ping()
-                const commission = await readCommissionId({ useCache: true, chainId, cache, params: [id] })
+                const commission = await readCommissionId({ useCache: true, chainId, cache, params: [certId] })
                 if (commission !== false) {
                     setValue(commission)
                 }
@@ -159,7 +162,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
         }, 100)
 
         return () => clearTimeout(timeId)
-    }, [isConnected, chainId, address, id])
+    }, [isConnected, chainId, address, id, certId])
 
     return {
         getCommission,

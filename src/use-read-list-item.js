@@ -15,6 +15,7 @@ if (!window.REDSTONE.QUEUE) {
 
 const defaultArgs = { 
     address: null,
+    paymentAddress: null,
     cache: 1000,
     stas: false,
     once: false,
@@ -35,6 +36,7 @@ const useReadListItem = (_id = null, _item, args = defaultArgs) => {
 
     const {
         address: userAddress, 
+        paymentAddress,
         cache,  
         stas, 
         once, 
@@ -65,7 +67,7 @@ const useReadListItem = (_id = null, _item, args = defaultArgs) => {
 
     const chainId = parseInt(network.chainId)
 
-    const id = _id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`
+    const id = `${_id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`}${(paymentAddress || '').toLowerCase()}`
         , copyId = murmur.x86.hash128(`${userCopyId}`)
 
     const params = [id, copyId, stas, self, once, single, randomHash, addressValue]
