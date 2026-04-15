@@ -45,7 +45,7 @@ const useCertificate = (_id = null, args = defaultArgs) => {
     const chainId = parseInt(network.chainId)
 
     const id = _id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`
-        , certId = `${id}${(paymentAddress || '').toLowerCase()}`
+        , certId = `${id}${paymentAddress.toLowerCase()}`
 
     const [isLoading, setIsLoading, setIsFinished] = useLoadingController(isConnected, isError, chainId, load, watch, interval, cache)
 
