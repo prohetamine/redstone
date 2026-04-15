@@ -322,8 +322,7 @@ const useList = (_id = null, args = defaultArgs) => {
         updateValue, 
         status: isError && load ? 'error' : isAllowDataRead && load ? isLoading ? 'pending' : 'success' : 'pending',
         getCommission: async () => {
-            const certId = `${id}${paymentAddress.toLowerCase()}`
-                , commission = await readCommissionId({ chainId, cache, useCache: true, params: [certId] })
+            const commission = await readCommissionId({ chainId, cache, useCache: true, params: [id] })
         
             return {
                 commission,
