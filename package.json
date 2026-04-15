@@ -1,6 +1,6 @@
 {
   "name": "@prohetamine/redstone",
-  "version": "0.1.51",
+  "version": "0.1.52",
   "description": "Simple state storage library in the blockchain",
   "author": "Stas Prohetamine",
   "license": "ISC",
