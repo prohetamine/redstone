@@ -54,7 +54,7 @@ const useApp = () => {
 
     return { 
         networks,
-        chainId: parseInt(chainId),
+        chainId: Number(chainId),
         switchNetwork,
         isConnected, 
         open, 

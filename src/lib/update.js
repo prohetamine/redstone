@@ -3,13 +3,16 @@ import setupSigner from './setup-singer'
 import switchNetwork from './switch-network'
 
 const update = async ({ type, address, params }) => {
-    const { Contract, MaxUint256 } = window.REDSTONE
+    const { Contract, MaxUint256, BrowserProvider, appKit } = window.REDSTONE
 
     const id = params[0]
         , stas = params[2]
 
-    const { chainId } = await setupSigner()
-        , _address = config.blockChainsData.find(({ network }) => network.id === chainId)
+    const walletProvider = appKit.getWalletProvider()
+        , provider = new BrowserProvider(walletProvider)
+        , _network = await provider.getNetwork()
+
+    const _address = config.blockChainsData.find(({ network }) => network.id === Number(_network.chainId))
 
     if (!_address) {
         const chainIdTestnet = config.blockChainsData.find(({ network }) => network.id === 97)
