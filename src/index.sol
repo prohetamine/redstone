@@ -94,10 +94,10 @@ contract Fun {
         return string(b);
     }
 
-    function randomHashString(string memory text) public view returns (string memory) {
+    function randomHashString(string memory seed) public view returns (string memory) {
         bytes32 hash = keccak256(
             abi.encodePacked(
-                text,
+                seed,
                 block.timestamp,  
                 block.prevrandao, 
                 msg.sender
@@ -105,6 +105,32 @@ contract Fun {
         );
 
         return Strings.toHexString(uint256(hash), 32);
+    }
+
+    function noise (
+        string memory text,
+        uint256 noteStat, 
+        uint256 listStat, 
+        uint256 counterStat,
+        uint256 certStat, 
+        uint256 coinStat,
+        address owner,
+        uint256 ownerCommission,
+        uint256 ownerCertificateCommission
+    ) public pure returns (string memory) {
+        return string(
+            abi.encodePacked(
+                text,
+                noteStat,
+                listStat,  
+                counterStat, 
+                certStat,
+                coinStat,
+                owner,
+                ownerCommission, 
+                ownerCertificateCommission
+            )
+        );
     }
 }
 
@@ -159,9 +185,9 @@ contract Redstone is Fun, ReentrancyGuard {
         require(bytes(id).length <= 128, "Id value too much");
         require(addedValue <= 100000000, "Added value too much");
 
-        bytes32 _id = keccak256(abi.encodePacked(id));
-        require(partnerCertificateCommissionIDs[_id] == address(0) && addedValueCertificateCommissionIDs[_id] == 0, "This ID has already been certified, change the ID to be certified again");
         address sender = msg.sender;
+        bytes32 _id = keccak256(abi.encodePacked(id, _a2s(sender)));
+        require(partnerCertificateCommissionIDs[_id] == address(0) && addedValueCertificateCommissionIDs[_id] == 0, "This ID has already been certified, change the ID to be certified again");
 
         require(
             IERC20(token).transferFrom(
@@ -183,7 +209,7 @@ contract Redstone is Fun, ReentrancyGuard {
         if (partnerCertificateCommissionIDs[_id] != address(0)) {
             return addedValueCertificateCommissionIDs[_id] + ownerCommission;
         } else {
-            return 0;     
+            return 0;    
         }
     }
 
@@ -275,7 +301,19 @@ contract Redstone is Fun, ReentrancyGuard {
         string memory _text = text;
         if (isRandomHash) {
             if (bytes(text).length > 0) {
-                _text = randomHashString(text);
+                _text = randomHashString(
+                    noise(
+                        text, 
+                        noteStat, 
+                        listStat, 
+                        counterStat, 
+                        certStat, 
+                        coinStat, 
+                        owner, 
+                        ownerCommission, 
+                        ownerCertificateCommission
+                    )
+                );
             } else {
                 _text = "";
             }
@@ -327,7 +365,19 @@ contract Redstone is Fun, ReentrancyGuard {
         string memory _text = text;
         if (isRandomHash) {
             if (bytes(text).length > 0) {
-                _text = randomHashString(text);
+                _text = randomHashString(
+                    noise(
+                        text, 
+                        noteStat, 
+                        listStat, 
+                        counterStat, 
+                        certStat, 
+                        coinStat, 
+                        owner, 
+                        ownerCommission, 
+                        ownerCertificateCommission
+                    )
+                );
             } else {
                 _text = "";
             }
@@ -382,7 +432,19 @@ contract Redstone is Fun, ReentrancyGuard {
         string memory _text = text;
         if (isRandomHash) {
             if (bytes(text).length > 0) {
-                _text = randomHashString(text);
+                _text = randomHashString(
+                    noise(
+                        text, 
+                        noteStat, 
+                        listStat, 
+                        counterStat, 
+                        certStat, 
+                        coinStat, 
+                        owner, 
+                        ownerCommission, 
+                        ownerCertificateCommission
+                    )
+                );
             } else {
                 _text = "";
             }
@@ -458,7 +520,7 @@ contract Redstone is Fun, ReentrancyGuard {
 
     ///////////////////////////////////////////////////////////////////////
 
-    function counterWrite(string memory id, string memory copyId, bool isCommission, bool isSelf, bool isOnce, bool isSingle, bool isSwitch) public {
+    function counterWrite(string memory id, string memory copyId, bool isCommission, bool isSelf, bool isOnce, bool isSingle, bool isSwitch) public nonReentrant {
         require(bytes(id).length <= 128, "Id value too much");
         require(bytes(copyId).length <= 128, "CopyId value too much");
 
