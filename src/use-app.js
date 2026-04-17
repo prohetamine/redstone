@@ -35,7 +35,19 @@ const useApp = () => {
             let chain = config.blockChainsData.find(({ network }) => network.id === chainId)
 
             if (!chain) {
-                switchNetwork(config.blockChainsData[0].network.id)
+                const chainIdTestnet = config.blockChainsData.find(({ network }) => network.id === 97)
+                    , chainIdBSC = config.blockChainsData.find(({ network }) => network.id === 56)
+                    , chainIdLocal = config.blockChainsData.find(({ network }) => network.id === 31337)
+    
+                if (chainIdTestnet) {
+                    switchNetwork(chain.network.id)
+                } else {
+                    if (chainIdBSC) {
+                        switchNetwork(chainIdBSC.network.id)
+                    } else {
+                        switchNetwork(chainIdLocal.network.id)
+                    }
+                }
             }
         }
     }, [chainId, isConnected])

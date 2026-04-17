@@ -16,7 +16,7 @@ const blockChainsData = [
       color: '#fff',
     },
     token: '0xD566886eB93500e2BA464bd48c8D5A2556569253',
-    receiver: '0x0dEe24C99e8dF7f0E058F4F48f228CC07DB704Fc',
+    receiver: '',
     publicRpc: 'https://bsc-rpc.publicnode.com'
   },
   {
@@ -27,7 +27,7 @@ const blockChainsData = [
       color: '#fff',
     },
     token: '0xD566886eB93500e2BA464bd48c8D5A2556569253',
-    receiver: '0x4631BCAbD6dF18D94796344963cB60d44a4136b6',
+    receiver: '',
     publicRpc: 'https://polygon-bor-rpc.publicnode.com'
   }*/
 ]

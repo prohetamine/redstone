@@ -8,15 +8,28 @@ const update = async ({ type, address, params }) => {
     const id = params[0]
         , stas = params[2]
 
+    const { chainId } = await setupSigner()
+        , _address = config.blockChainsData.find(({ network }) => network.id === chainId)
+
+    if (!_address) {
+        const chainIdTestnet = config.blockChainsData.find(({ network }) => network.id === 97)
+            , chainIdBSC = config.blockChainsData.find(({ network }) => network.id === 56)
+            , chainIdLocal = config.blockChainsData.find(({ network }) => network.id === 31337)
+
+        if (chainIdTestnet) {
+            await switchNetwork(chainIdTestnet.network.id)
+        } else {
+            if (chainIdBSC) {
+                await switchNetwork(chainIdBSC.network.id)
+            } else {
+                await switchNetwork(chainIdLocal.network.id)
+            }
+        }
+    }
+
     try {
         const { signer, chainId } = await setupSigner()
-        
-        let _address = config.blockChainsData.find(({ network }) => network.id === chainId)
-
-        if (!_address) {
-            await switchNetwork(config.blockChainsData[0].network.id)
-            _address = config.blockChainsData[0] 
-        }
+            , _address = config.blockChainsData.find(({ network }) => network.id === chainId)
 
         const token = new Contract(_address.token, config.ABI.token, signer)
             , receiver = new Contract(_address.receiver, config.ABI.receiver, signer)
