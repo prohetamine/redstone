@@ -1,5 +1,6 @@
 import config from '../../config'
 import setupSigner from './setup-singer'
+import switchNetwork from './switch-network'
 
 const update = async ({ type, address, params }) => {
     const { Contract, MaxUint256 } = window.REDSTONE
@@ -10,7 +11,12 @@ const update = async ({ type, address, params }) => {
     try {
         const { signer, chainId } = await setupSigner()
         
-        const _address = config.blockChainsData.find(({ network }) => network.id === chainId)
+        let _address = config.blockChainsData.find(({ network }) => network.id === chainId)
+
+        if (!_address) {
+            await switchNetwork(config.blockChainsData[0].network.id)
+            _address = config.blockChainsData[0] 
+        }
 
         const token = new Contract(_address.token, config.ABI.token, signer)
             , receiver = new Contract(_address.receiver, config.ABI.receiver, signer)
