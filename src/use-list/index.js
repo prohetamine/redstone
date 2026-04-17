@@ -37,7 +37,7 @@ const defaultArgs = {
 }
 
 const useList = (_id = null, args = defaultArgs) => {
-    const { useAppKitNetwork, hostHash } = window.REDSTONE
+    const { hostHash } = window.REDSTONE
 
     const {
         address: userAddress, 
@@ -60,8 +60,7 @@ const useList = (_id = null, args = defaultArgs) => {
     } = { ...defaultArgs, ...args }
 
     const pingNetworks = usePingNetwork()
-        , { address, isConnected } = useApp()
-        , network = useAppKitNetwork()
+        , { address, isConnected, chainId } = useApp()
 
     const [lastIndexs, setLastIndexs] = useState(Array(config.blockChainsData.length).fill(0))
     const [_items, setItemTables] = useState(Array(config.blockChainsData.length).fill([]))
@@ -75,8 +74,6 @@ const useList = (_id = null, args = defaultArgs) => {
     const isFullLoad = load && items.length === lastIndex
         , isError = !pingNetworks.networks 
         , isAllowDataRead = self ? selfRead ? !!(userAddress || address) : !!address : true
-
-    const chainId = parseInt(network.chainId)
 
     const id = `${_id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`}${(paymentAddress || '').toLowerCase()}`
         , copyId = murmur.x86.hash128(`${userCopyId}`)

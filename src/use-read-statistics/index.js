@@ -17,8 +17,6 @@ const defaultArgs = {
 }
 
 const useReadStatistics = (args = defaultArgs) => {
-    const { useAppKitNetwork } = window.REDSTONE
-
     const {   
         cache,
         watch, 
@@ -26,8 +24,7 @@ const useReadStatistics = (args = defaultArgs) => {
     } = { ...defaultArgs, ...args }
 
     const pingNetworks = usePingNetwork()
-        , { address, isConnected } = useApp()
-        , network = useAppKitNetwork()
+        , { address, isConnected, chainId } = useApp()
 
     const [value, setValue] = useState({
         notes: 0,
@@ -38,8 +35,6 @@ const useReadStatistics = (args = defaultArgs) => {
     })
 
     const isError = !pingNetworks.networks
-
-    const chainId = parseInt(network.chainId)
 
     const [isLoading, setIsLoading, setIsFinished] = useLoadingController(isConnected, isError, chainId)
 

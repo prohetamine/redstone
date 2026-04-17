@@ -20,8 +20,6 @@ const defaultArgs = {
 }
 
 const useCommission = (args = defaultArgs) => {
-    const { useAppKitNetwork } = window.REDSTONE
-
     const { 
         load,
         watch, 
@@ -30,8 +28,7 @@ const useCommission = (args = defaultArgs) => {
     } = { ...defaultArgs, ...args }
 
     const pingNetworks = usePingNetwork()
-        , { address, isConnected } = useApp()
-        , network = useAppKitNetwork()
+        , { address, isConnected, chainId } = useApp()
 
     const [value, setValue] = useState({
         owner: 0,
@@ -39,8 +36,6 @@ const useCommission = (args = defaultArgs) => {
     })
     
     const isError = !pingNetworks.currentNetwork
-
-    const chainId = parseInt(network.chainId)
 
     const [isLoading, setIsLoading, setIsFinished] = useLoadingController(isConnected, isError, chainId, load, watch, interval, cache)
 

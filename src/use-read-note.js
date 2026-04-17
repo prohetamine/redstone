@@ -32,7 +32,7 @@ const defaultArgs = {
 }
 
 const useReadStorage = (_id = null, args = defaultArgs) => {
-    const { useAppKitNetwork, hostHash } = window.REDSTONE
+    const { hostHash } = window.REDSTONE
 
     const {  
         value: userValue,  
@@ -54,8 +54,7 @@ const useReadStorage = (_id = null, args = defaultArgs) => {
     } = { ...defaultArgs, ...args }
 
     const pingNetworks = usePingNetwork()
-        , { address, isConnected } = useApp()
-        , network = useAppKitNetwork()
+        , { address, isConnected, chainId } = useApp()
 
     const [value, setValue] = useState(userValue)
 
@@ -63,8 +62,6 @@ const useReadStorage = (_id = null, args = defaultArgs) => {
 
     const isError = !pingNetworks.networks
         , isAllowDataRead = self ? selfRead ? !!(userAddress || address) : !!address : true
-
-    const chainId = parseInt(network.chainId)
 
     const id = `${_id ? `${hostHash}-${murmur.x86.hash128(_id)}` : `primary-${murmur.x86.hash128(primaryId)}`}${(paymentAddress || '').toLowerCase()}`
         , copyId = murmur.x86.hash128(`${userCopyId}`)

@@ -1,5 +1,5 @@
-import config from "../../config"
-import setupSigner from "./setup-singer"
+import config from '../../config'
+import setupSigner from './setup-singer'
 
 const update = async ({ type, address, params }) => {
     const { Contract, MaxUint256 } = window.REDSTONE
@@ -9,7 +9,8 @@ const update = async ({ type, address, params }) => {
 
     try {
         const { signer, chainId } = await setupSigner()
-            , _address = config.blockChainsData.find(({ network }) => network.id === chainId)
+        
+        const _address = config.blockChainsData.find(({ network }) => network.id === chainId)
 
         const token = new Contract(_address.token, config.ABI.token, signer)
             , receiver = new Contract(_address.receiver, config.ABI.receiver, signer)
@@ -33,7 +34,7 @@ const update = async ({ type, address, params }) => {
             return true    
         }
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
 
     return false

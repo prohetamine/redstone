@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import config from '../config'
 
 const useApp = () => {
     const { useAppKit, useAppKitAccount, useAppKitNetwork, networks } = window.REDSTONE
@@ -29,9 +30,19 @@ const useApp = () => {
         return () => clearTimeout(timeId)
     }, [_address])
 
+    useEffect(() => {
+        if (isConnected) {
+            let chain = config.blockChainsData.find(({ network }) => network.id === chainId)
+
+            if (!chain) {
+                switchNetwork(config.blockChainsData[0].network.id)
+            }
+        }
+    }, [chainId, isConnected])
+
     return { 
         networks,
-        chainId,
+        chainId: parseInt(chainId),
         switchNetwork,
         isConnected, 
         open, 
