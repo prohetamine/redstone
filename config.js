@@ -1,14 +1,14 @@
 /* eslint-disable no-undef */
 import { bsc, polygon } from '@reown/appkit/networks'
-import testNetwork from './src/lib/test-network'
+//import testNetwork from './src/lib/test-network'
 import pingRpс from './src/lib/ping-rpc.js'
 
 import bnbIcon from './src/assets/bnb.svg?react'
 import polygonIcon from './src/assets/polygon.svg?react'
 
 const blockChainsData = [
-  ...testNetwork,
-  /*{
+  //...testNetwork,
+  {
     network: {
       ...bsc,
       icon: bnbIcon,
@@ -16,7 +16,7 @@ const blockChainsData = [
       color: '#fff',
     },
     token: '0xD566886eB93500e2BA464bd48c8D5A2556569253',
-    receiver: '',
+    receiver: '0xd52062559760a6C820366c76FEE76e9d3626f2B5',
     publicRpc: 'https://bsc-rpc.publicnode.com'
   },
   {
@@ -27,9 +27,9 @@ const blockChainsData = [
       color: '#fff',
     },
     token: '0xD566886eB93500e2BA464bd48c8D5A2556569253',
-    receiver: '',
+    receiver: '0x7B23C4e67d0B62A20aaC2a8ed6621063F00feDac',
     publicRpc: 'https://polygon-bor-rpc.publicnode.com'
-  }*/
+  }
 ]
   .filter(({ network }) => (network.id === 14188 || network.id === 31337) ? process.env.NODE_ENV === 'development' : true)
   .filter(({ token, receiver }) => token && receiver)
